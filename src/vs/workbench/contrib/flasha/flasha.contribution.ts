@@ -1,7 +1,10 @@
-import { registerWorkbenchContribution2, WorkbenchPhase } from '../../common/contributions.js';
+import { registerWorkbenchContribution2, WorkbenchPhase, IWorkbenchContribution } from '../../common/contributions.js';
+import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
 
-class FlashaCodeContribution {
-  constructor() {
+class FlashaCodeContribution implements IWorkbenchContribution {
+  constructor(
+    @IInstantiationService private readonly instantiationService: IInstantiationService
+  ) {
     this.init();
   }
 
