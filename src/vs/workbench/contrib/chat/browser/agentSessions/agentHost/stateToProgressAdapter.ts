@@ -75,6 +75,14 @@ export function isSubagentToolName(toolName: string): boolean {
 	return SUBAGENT_TOOL_NAMES.has(toolName);
 }
 
+function systemNotificationToProgress(content: StringOrMarkdown | undefined, connectionAuthority: string | undefined): IChatProgress | undefined {
+	if (!content) {
+		return undefined;
+	}
+	const value = stringOrMarkdownToString(content, connectionAuthority);
+	return { kind: 'progressMessage', content: typeof value === 'string' ? new MarkdownString(value) : value };
+}
+
 /**
  * Returns true if this tool call spawns a subagent session, either because
  * the server reported `_meta.toolKind === 'subagent'` or because the tool
@@ -143,7 +151,18 @@ export function turnsToHistory(backendSession: URI, turns: readonly Turn[], part
 
 		// Request
 		const variableData = userMessageToVariableData(turn.userMessage, connectionAuthority);
-		history.push({ id: turn.id, type: 'request', prompt: turn.userMessage.text, participant: participantId, modelId, variableData });
+		history.push({
+			id: turn.id,
+			type: 'request',
+			prompt: turn.userMessage.text,
+			participant: participantId,
+			modelId,
+			variableData,
+			...(turn.systemInitiatedLabel ? {
+				isSystemInitiated: true,
+				systemInitiatedLabel: turn.systemInitiatedLabel,
+			} : {}),
+		});
 
 		// Response parts — iterate the unified responseParts array
 		const parts: IChatProgress[] = [];
@@ -173,6 +192,14 @@ export function turnsToHistory(backendSession: URI, turns: readonly Turn[], part
 				case ResponsePartKind.Reasoning:
 					if (rp.content) {
 						parts.push({ kind: 'thinking', value: rp.content });
+					}
+					break;
+				case ResponsePartKind.SystemNotification:
+					{
+						const progress = systemNotificationToProgress(rp.content, connectionAuthority);
+						if (progress) {
+							parts.push(progress);
+						}
 					}
 					break;
 				case ResponsePartKind.ContentRef:
@@ -348,6 +375,14 @@ export function activeTurnToProgress(sessionResource: URI, activeTurn: ActiveTur
 				}
 				break;
 			}
+			case ResponsePartKind.SystemNotification:
+				{
+					const progress = systemNotificationToProgress(rp.content, connectionAuthority);
+					if (progress) {
+						parts.push(progress);
+					}
+				}
+				break;
 			case ResponsePartKind.ContentRef:
 				break;
 		}

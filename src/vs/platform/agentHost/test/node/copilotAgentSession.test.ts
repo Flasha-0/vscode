@@ -27,6 +27,7 @@ import { ActionType, type SessionDeltaAction, type SessionErrorAction, type Sess
 import { MessageAttachmentKind, ResponsePartKind, SessionInputAnswerState, SessionInputAnswerValueKind, SessionInputQuestionKind, SessionInputResponseKind, ToolCallStatus, ToolResultContentType, type ToolResultFileEditContent } from '../../common/state/sessionState.js';
 import { CopilotAgentSession, IActiveClientSnapshot, SessionWrapperFactory } from '../../node/copilot/copilotAgentSession.js';
 import { CopilotSessionWrapper } from '../../node/copilot/copilotSessionWrapper.js';
+import { buildCopilotSystemNotification } from '../../node/copilot/copilotSystemNotification.js';
 import { IAgentConfigurationService } from '../../node/agentConfigurationService.js';
 import { SessionConfigKey } from '../../common/sessionConfigKeys.js';
 import { createSessionDataService, createZeroDiffComputeService } from '../common/sessionTestHelpers.js';
@@ -167,6 +168,12 @@ type ISessionInternalsForTest = {
 
 function isAction(s: AgentSignal, type: ActionType): s is IAgentActionSignal {
 	return s.kind === 'action' && s.action.type === type;
+}
+
+function getActions(signals: readonly AgentSignal[]) {
+	return signals
+		.filter((s): s is IAgentActionSignal => s.kind === 'action')
+		.map(s => s.action);
 }
 
 function getInputRequest(signal: AgentSignal): SessionInputRequestedAction['request'] {
@@ -1006,6 +1013,146 @@ suite('CopilotAgentSession', () => {
 		});
 	});
 
+	// ---- system.notification ----
+
+	suite('system.notification', () => {
+
+		test('translator handles supported kinds and ignores unsupported kinds', () => {
+			const base = {
+				id: 'evt-system',
+				parentId: null,
+				timestamp: new Date().toISOString(),
+				type: 'system.notification' as const,
+			};
+
+			assert.deepStrictEqual(buildCopilotSystemNotification({
+				...base,
+				data: {
+					content: '<system_notification>\nShell done\n</system_notification>',
+					kind: { type: 'shell_completed', shellId: 'shell-a', exitCode: 0, description: 'sleep 6' },
+				},
+			}), {
+				message: 'Shell done',
+				label: '`sleep 6` completed',
+			});
+
+			assert.deepStrictEqual(buildCopilotSystemNotification({
+				...base,
+				data: {
+					content: 'Detached done',
+					kind: { type: 'shell_detached_completed', shellId: 'detached-a' },
+				},
+			}), {
+				message: 'Detached done',
+				label: 'Shell `detached-a` completed',
+			});
+
+			assert.deepStrictEqual(buildCopilotSystemNotification({
+				...base,
+				data: {
+					content: 'Agent done',
+					kind: { type: 'agent_completed', agentId: 'agent-a', agentType: 'task', status: 'completed' },
+				},
+			}), {
+				message: 'Agent done',
+				label: 'Background agent completed',
+			});
+
+			assert.strictEqual(buildCopilotSystemNotification({
+				...base,
+				data: {
+					content: 'Agent idle',
+					kind: { type: 'agent_idle', agentId: 'agent-a', agentType: 'task' },
+				},
+			}), undefined);
+		});
+
+		test('idle notification starts a system-initiated turn without sending another SDK message', async () => {
+			const { mockSession, signals } = await createAgentSession(disposables);
+
+			mockSession.fire('system.notification', {
+				content: '<system_notification>\nShell command completed\n</system_notification>',
+				kind: { type: 'shell_completed', shellId: 'shell-a', exitCode: 0, description: 'sleep 6' },
+			} as SessionEventPayload<'system.notification'>['data']);
+
+			assert.strictEqual(mockSession.sendRequests.length, 0, 'system notification should not call session.send');
+			const actions = getActions(signals);
+			const turnStarted = actions.find(a => a.type === ActionType.SessionTurnStarted);
+			assert.ok(turnStarted, 'should synthesize a fresh turn');
+			assert.strictEqual(turnStarted.userMessage.text, 'Shell command completed');
+			assert.strictEqual(turnStarted.systemInitiatedLabel, '`sleep 6` completed');
+		});
+
+		test('routes subsequent SDK events into the generated system turn', async () => {
+			const { mockSession, signals } = await createAgentSession(disposables);
+
+			mockSession.fire('system.notification', {
+				content: 'Shell command completed',
+				kind: { type: 'shell_completed', shellId: 'shell-a', exitCode: 0, description: 'sleep 6' },
+			} as SessionEventPayload<'system.notification'>['data']);
+			const turnStarted = getActions(signals).find(a => a.type === ActionType.SessionTurnStarted)!;
+
+			mockSession.fire('assistant.message_delta', {
+				deltaContent: 'Reading the shell output now.',
+			} as SessionEventPayload<'assistant.message_delta'>['data']);
+
+			const responsePart = getActions(signals).find(a => a.type === ActionType.SessionResponsePart && a.part.kind === ResponsePartKind.Markdown);
+			assert.ok(responsePart, 'expected response part for follow-up assistant delta');
+			assert.strictEqual((responsePart as SessionResponsePartAction).turnId, (turnStarted as { turnId: string }).turnId);
+		});
+
+		test('notification during an active turn appends a SystemNotification response part', async () => {
+			const { session, mockSession, signals } = await createAgentSession(disposables);
+			session.resetTurnState('turn-active');
+
+			mockSession.fire('system.notification', {
+				content: 'Shell command completed',
+				kind: { type: 'shell_completed', shellId: 'shell-a', exitCode: 0, description: 'sleep 6' },
+			} as SessionEventPayload<'system.notification'>['data']);
+
+			const actions = getActions(signals);
+			assert.strictEqual(actions.find(a => a.type === ActionType.SessionTurnStarted), undefined, 'should not create a duplicate turn');
+			const systemPart = actions.find(a => a.type === ActionType.SessionResponsePart && a.part.kind === ResponsePartKind.SystemNotification) as SessionResponsePartAction | undefined;
+			assert.ok(systemPart, 'expected system notification response part');
+			assert.strictEqual(systemPart.turnId, 'turn-active');
+			assert.strictEqual(systemPart.part.kind, ResponsePartKind.SystemNotification);
+			assert.strictEqual(systemPart.part.content, 'Shell command completed');
+		});
+
+		test('generated system turn completes on session.idle', async () => {
+			const { mockSession, signals } = await createAgentSession(disposables);
+
+			mockSession.fire('system.notification', {
+				content: 'Shell command completed',
+				kind: { type: 'shell_completed', shellId: 'shell-a', exitCode: 0, description: 'sleep 6' },
+			} as SessionEventPayload<'system.notification'>['data']);
+			const turnStarted = getActions(signals).find(a => a.type === ActionType.SessionTurnStarted)!;
+
+			mockSession.fire('session.idle', {} as SessionEventPayload<'session.idle'>['data']);
+
+			const turnComplete = getActions(signals).find(a => a.type === ActionType.SessionTurnComplete);
+			assert.ok(turnComplete, 'expected idle to complete the generated turn');
+			assert.strictEqual((turnComplete as { turnId: string }).turnId, turnStarted.turnId);
+		});
+
+		test('events after a completed turn do not target the stale previous turn id', async () => {
+			const { session, mockSession, signals } = await createAgentSession(disposables);
+			session.resetTurnState('turn-old');
+
+			mockSession.fire('session.idle', {} as SessionEventPayload<'session.idle'>['data']);
+			mockSession.fire('assistant.message_delta', {
+				deltaContent: 'late text',
+			} as SessionEventPayload<'assistant.message_delta'>['data']);
+
+			const lateMarkdownActions = getActions(signals)
+				.filter(a => a.type === ActionType.SessionResponsePart && a.part.kind === ResponsePartKind.Markdown)
+				.map(a => a as SessionResponsePartAction);
+			const lateMarkdown = lateMarkdownActions[lateMarkdownActions.length - 1];
+			assert.ok(lateMarkdown, 'late event still emits a no-op action for the reducer');
+			assert.notStrictEqual(lateMarkdown.turnId, 'turn-old');
+		});
+	});
+
 	// ---- event mapping ----
 
 	suite('event mapping', () => {
@@ -1384,12 +1531,20 @@ suite('CopilotAgentSession', () => {
 			assert.strictEqual(signals.length, 0);
 		});
 
-		test('idle event is forwarded', async () => {
-			const { mockSession, signals } = await createAgentSession(disposables);
+		test('idle event completes the active turn', async () => {
+			const { session, mockSession, signals } = await createAgentSession(disposables);
+			session.resetTurnState('turn-idle');
 			mockSession.fire('session.idle', {} as SessionEventPayload<'session.idle'>['data']);
 
 			assert.strictEqual(signals.length, 1);
 			assert.ok(isAction(signals[0], ActionType.SessionTurnComplete));
+		});
+
+		test('idle event without an active turn is ignored', async () => {
+			const { mockSession, signals } = await createAgentSession(disposables);
+			mockSession.fire('session.idle', {} as SessionEventPayload<'session.idle'>['data']);
+
+			assert.strictEqual(signals.length, 0);
 		});
 
 		test('error event is forwarded', async () => {

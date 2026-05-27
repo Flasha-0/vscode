@@ -35,6 +35,7 @@ import { ResponsePartKind, SessionInputAnswerState, SessionInputAnswerValueKind,
 import { IAgentConfigurationService } from '../agentConfigurationService.js';
 import type { IExitPlanModeRequestParams, IExitPlanModeResponse } from './copilotAgent.js';
 import { CopilotSessionWrapper } from './copilotSessionWrapper.js';
+import { buildCopilotSystemNotification } from './copilotSystemNotification.js';
 import { parseLeadingSlashCommand } from './copilotSlashCommandCompletionProvider.js';
 import type { IUnsandboxedCommandConfirmationRequest, ShellManager } from './copilotShellTools.js';
 import { getEditFilePaths, getInvocationMessage, getPastTenseMessage, getPermissionDisplay, getShellLanguage, getSubagentMetadata, getToolDisplayName, getToolInputString, getToolKind, isEditTool, isHiddenTool, isShellTool, synthesizeSkillToolCall, tryStringify, type ITypedPermissionRequest } from './copilotToolDisplay.js';
@@ -577,6 +578,21 @@ export class CopilotAgentSession extends Disposable {
 		this._parentToolCallIdsByAgentId.clear();
 	}
 
+	private _completeActiveTurn(): void {
+		if (!this._turnId) {
+			return;
+		}
+		const turnId = this._turnId;
+		this._emitAction({
+			type: ActionType.SessionTurnComplete,
+			turnId,
+		});
+		this._turnId = '';
+		this._currentMarkdownPartIds.clear();
+		this._currentReasoningPartIds.clear();
+		this._parentToolCallIdsByAgentId.clear();
+	}
+
 	private _getEditFilePaths(parameters: unknown): string[] {
 		return getEditFilePaths(parameters).map(path => this._resolveEditFilePath(path));
 	}
@@ -776,8 +792,7 @@ export class CopilotAgentSession extends Disposable {
 
 	async send(prompt: string, attachments?: readonly MessageAttachment[], turnId?: string, mode?: CopilotSdkMode): Promise<void> {
 		if (turnId) {
-			this._turnId = turnId;
-			this._turnCopilotUsageTotalNanoAiu = 0;
+			this.resetTurnState(turnId);
 		}
 		this._logService.info(`[Copilot:${this.sessionId}] sendMessage called: "${prompt.substring(0, 100)}${prompt.length > 100 ? '...' : ''}" (${attachments?.length ?? 0} attachments)`);
 
@@ -1576,6 +1591,38 @@ export class CopilotAgentSession extends Disposable {
 		const wrapper = this._wrapper;
 		const sessionId = this.sessionId;
 
+		this._register(wrapper.onSystemNotification(e => {
+			const notification = buildCopilotSystemNotification(e);
+			if (!notification) {
+				this._logService.trace(`[Copilot:${sessionId}] Ignoring system.notification kind=${e.data.kind.type}`);
+				return;
+			}
+
+			this._logService.info(`[Copilot:${sessionId}] System notification received: kind=${e.data.kind.type}`);
+			if (this._turnId) {
+				this._emitAction({
+					type: ActionType.SessionResponsePart,
+					turnId: this._turnId,
+					part: {
+						kind: ResponsePartKind.SystemNotification,
+						content: notification.message,
+					},
+				});
+				return;
+			}
+
+			const turnId = generateUuid();
+			this.resetTurnState(turnId);
+			this._emitAction({
+				type: ActionType.SessionTurnStarted,
+				turnId,
+				systemInitiatedLabel: notification.label,
+				userMessage: {
+					text: notification.message,
+				},
+			});
+		}));
+
 		// Handle `user.message` events with three responsibilities:
 		//
 		// 1. Skip SDK-injected (`source !== 'user'`) messages outright —
@@ -1812,10 +1859,7 @@ export class CopilotAgentSession extends Disposable {
 					activity: undefined,
 				});
 			}
-			this._emitAction({
-				type: ActionType.SessionTurnComplete,
-				turnId: this._turnId,
-			});
+			this._completeActiveTurn();
 		}));
 
 		// The SDK emits a `skill` tool call (which we hide) and a richer

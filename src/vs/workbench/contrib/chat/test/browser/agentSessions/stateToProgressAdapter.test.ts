@@ -8,7 +8,7 @@ import { autorun } from '../../../../../../base/common/observable.js';
 import { URI } from '../../../../../../base/common/uri.js';
 import { ensureNoDisposablesAreLeakedInTestSuite } from '../../../../../../base/test/common/utils.js';
 import { ToolCallStatus, ToolCallConfirmationReason, ToolResultContentType, TurnState, ResponsePartKind, type ActiveTurn, type ICompletedToolCall, type ToolCallRunningState, type Turn, type ToolCallResponsePart, ToolCallCancellationReason } from '../../../../../../platform/agentHost/common/state/sessionState.js';
-import { IChatToolInvocation, IChatToolInvocationSerialized, type IChatMarkdownContent, type IChatUsage } from '../../../common/chatService/chatService.js';
+import { IChatToolInvocation, IChatToolInvocationSerialized, type IChatMarkdownContent, type IChatProgressMessage, type IChatUsage } from '../../../common/chatService/chatService.js';
 import { isToolResultInputOutputDetails, type IToolResultInputOutputDetails, ToolDataSource, ToolInvocationPresentation } from '../../../common/tools/languageModelToolsService.js';
 import { turnsToHistory as rawTurnsToHistory, activeTurnToProgress as rawActiveTurnToProgress, toolCallStateToInvocation as rawToolCallStateToInvocation, finalizeToolInvocation as rawFinalizeToolInvocation, updateRunningToolSpecificData as rawUpdateRunningToolSpecificData } from '../../../browser/agentSessions/agentHost/stateToProgressAdapter.js';
 
@@ -132,6 +132,33 @@ suite('stateToProgressAdapter', () => {
 			assert.strictEqual(serialized.toolCallId, 'tc-1');
 			assert.strictEqual(serialized.toolId, 'test_tool');
 			assert.strictEqual(serialized.isComplete, true);
+		});
+
+		test('system-initiated turn preserves compact request label', () => {
+			const turn = createTurn({
+				userMessage: { text: 'Shell command completed' },
+				systemInitiatedLabel: '`sleep 6` completed',
+			});
+
+			const history = turnsToHistory(URI.file('/'), [turn], 'participant-1');
+			assert.strictEqual(history[0].type, 'request');
+			if (history[0].type !== 'request') { return; }
+			assert.strictEqual(history[0].isSystemInitiated, true);
+			assert.strictEqual(history[0].systemInitiatedLabel, '`sleep 6` completed');
+		});
+
+		test('system notification response part restores as progress message', () => {
+			const turn = createTurn({
+				responseParts: [{ kind: ResponsePartKind.SystemNotification, content: 'Shell command completed' }],
+			});
+
+			const history = turnsToHistory(URI.file('/'), [turn], 'participant-1');
+			const response = history[1];
+			assert.strictEqual(response.type, 'response');
+			if (response.type !== 'response') { return; }
+			const progress = response.parts[0] as IChatProgressMessage;
+			assert.strictEqual(progress.kind, 'progressMessage');
+			assert.strictEqual(progress.content.value, 'Shell command completed');
 		});
 
 		test('generic completed tool call in history includes input/output details', () => {
@@ -1023,6 +1050,15 @@ suite('stateToProgressAdapter', () => {
 			assert.strictEqual(result.length, 1);
 			assert.strictEqual(result[0].kind, 'markdownContent');
 			assert.strictEqual((result[0] as IChatMarkdownContent).content.value, 'Hello world');
+		});
+
+		test('produces progress message for system notification', () => {
+			const result = activeTurnToProgress(URI.file('/'), createActiveTurnState([
+				{ kind: ResponsePartKind.SystemNotification, content: 'Shell command completed' },
+			]), undefined);
+			assert.strictEqual(result.length, 1);
+			assert.strictEqual(result[0].kind, 'progressMessage');
+			assert.strictEqual((result[0] as IChatProgressMessage).content.value, 'Shell command completed');
 		});
 
 		test('produces thinking progress for reasoning', () => {

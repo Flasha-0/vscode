@@ -38,7 +38,7 @@ import { ITerminalChatService } from '../../../../terminal/browser/terminal.js';
 import { isAgentFeedbackVariableEntry, isImageVariableEntry, type IAgentFeedbackVariableEntry, type IChatRequestVariableEntry, type IImageVariableEntry } from '../../../common/attachments/chatVariableEntries.js';
 import { coerceImageBuffer } from '../../../common/chatImageExtraction.js';
 import { ChatRequestQueueKind, ConfirmedReason, ElicitationState, IChatProgress, IChatQuestion, IChatQuestionAnswers, IChatService, IChatToolInvocation, ToolConfirmKind, type IChatMultiSelectAnswer, type IChatQuestionAnswerValue, type IChatSingleSelectAnswer, type IChatTerminalToolInvocationData } from '../../../common/chatService/chatService.js';
-import { IChatSession, IChatSessionContentProvider, IChatSessionHistoryItem, IChatSessionItem, IChatSessionRequestHistoryItem, type IChatInputCompletionItem, type IChatInputCompletionsParams, type IChatInputCompletionsResult } from '../../../common/chatSessionsService.js';
+import { IChatSession, IChatSessionContentProvider, IChatSessionHistoryItem, IChatSessionItem, IChatSessionRequestHistoryItem, type IChatInputCompletionItem, type IChatInputCompletionsParams, type IChatInputCompletionsResult, type IChatSessionServerRequest } from '../../../common/chatSessionsService.js';
 import { ChatAgentLocation, ChatModeKind } from '../../../common/constants.js';
 import { IChatEditingService } from '../../../common/editing/chatEditingService.js';
 import { ILanguageModelsService } from '../../../common/languageModels.js';
@@ -102,6 +102,11 @@ interface IObserveTurnOptions {
 	 * suppressed to preserve legacy behavior.
 	 */
 	readonly subAgentInvocationId?: string;
+}
+
+interface IStartServerRequestOptions {
+	readonly isSystemInitiated?: boolean;
+	readonly systemInitiatedLabel?: string;
 }
 
 function getCopilotCredits(usage: UsageInfo | undefined): number | undefined {
@@ -233,7 +238,7 @@ class AgentHostChatSession extends Disposable implements IChatSession {
 	private readonly _onWillDispose = this._register(new Emitter<void>());
 	readonly onWillDispose = this._onWillDispose.event;
 
-	private readonly _onDidStartServerRequest = this._register(new Emitter<{ prompt: string; variableData?: IChatRequestVariableData }>());
+	private readonly _onDidStartServerRequest = this._register(new Emitter<IChatSessionServerRequest>());
 	readonly onDidStartServerRequest = this._onDidStartServerRequest.event;
 
 	readonly interruptActiveResponseCallback: IChatSession['interruptActiveResponseCallback'];
@@ -304,13 +309,18 @@ class AgentHostChatSession extends Disposable implements IChatSession {
 	 * Resets the progress observable and signals listeners to create a new
 	 * request+response pair in the chat model.
 	 */
-	startServerRequest(prompt: string, variableData?: IChatRequestVariableData): void {
+	startServerRequest(prompt: string, variableData?: IChatRequestVariableData, options?: IStartServerRequestOptions): void {
 		this._logService.info('[AgentHost] Server-initiated request started');
 		transaction(tx => {
 			this.progressObs.set([], tx);
 			this.isCompleteObs.set(false, tx);
 		});
-		this._onDidStartServerRequest.fire({ prompt, variableData });
+		this._onDidStartServerRequest.fire({
+			prompt,
+			variableData,
+			isSystemInitiated: options?.isSystemInitiated,
+			systemInitiatedLabel: options?.systemInitiatedLabel,
+		});
 	}
 }
 
@@ -612,6 +622,8 @@ export class AgentHostSessionHandler extends Disposable implements IChatSessionC
 							participant: this._config.agentId,
 							modelId: lookup.toLanguageModelId(activeRawModelId),
 							variableData: userMessageToVariableData(sessionState.activeTurn.userMessage, this._config.connectionAuthority),
+							isSystemInitiated: !!sessionState.activeTurn.systemInitiatedLabel,
+							systemInitiatedLabel: sessionState.activeTurn.systemInitiatedLabel,
 						});
 						history.push({
 							type: 'response',
@@ -1014,6 +1026,10 @@ export class AgentHostSessionHandler extends Disposable implements IChatSessionC
 			chatSession.startServerRequest(
 				activeTurn.userMessage.text,
 				userMessageToVariableData(activeTurn.userMessage, this._config.connectionAuthority),
+				{
+					isSystemInitiated: !!activeTurn.systemInitiatedLabel,
+					systemInitiatedLabel: activeTurn.systemInitiatedLabel,
+				},
 			);
 
 			// Set up turn progress tracking — reuse the same state-to-progress
