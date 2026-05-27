@@ -1,0 +1,47 @@
+{
+  "name": "flasha-code",
+  "displayName": "Flasha Code",
+  "description": "AI-powered development environment with 15 modes, chat, and smart agents",
+  "version": "1.0.0",
+  "publisher": "Flasha Code",
+  "license": "MIT",
+  "icon": "icon.png",
+  "engines": { "vscode": "^1.98.0" },
+  "categories": ["Chat", "Programming Languages", "Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "flasha.chat", "title": "Flasha Code: Chat", "category": "Flasha" },
+      { "command": "flasha.setMode", "title": "Flasha Code: Set Mode", "category": "Flasha" },
+      { "command": "flasha.open", "title": "Flasha Code: Open", "category": "Flasha" }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        { "id": "flasha", "title": "Flasha Code", "icon": "icon.svg" }
+      ]
+    },
+    "views": {
+      "flasha": [
+        { "type": "webview", "id": "flasha.chat", "name": "Chat" }
+      ]
+    },
+    "configuration": {
+      "title": "Flasha Code",
+      "properties": {
+        "flasha.defaultModel": { "type": "string", "default": "opencode/big-pickle", "description": "Default AI model" },
+        "flasha.defaultMode": { "type": "string", "default": "auto", "enum": ["auto","plan","build","chat","review","debug","test","document","refactor","security","deploy","analyze","design","migrate","git"] },
+        "flasha.language": { "type": "string", "default": "ar", "enum": ["ar","en"], "description": "UI language" },
+        "flasha.opencodePort": { "type": "number", "default": 4096, "description": "OpenCode server port" }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -b tsconfig.json",
+    "watch": "tsc -b tsconfig.json -w"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.98.0",
+    "typescript": "^5.7.0"
+  }
+}
