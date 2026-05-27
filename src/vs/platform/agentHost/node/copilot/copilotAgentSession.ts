@@ -567,8 +567,8 @@ export class CopilotAgentSession extends Disposable {
 
 	/**
 	 * Resets per-turn streaming state so the next text/reasoning chunk
-	 * allocates a fresh response part. Called by the agent when a new turn
-	 * starts (typically right before {@link send}).
+	 * allocates a fresh response part when the session starts a turn without
+	 * going through the normal send path.
 	 */
 	resetTurnState(turnId: string): void {
 		this._turnId = turnId;
@@ -792,7 +792,8 @@ export class CopilotAgentSession extends Disposable {
 
 	async send(prompt: string, attachments?: readonly MessageAttachment[], turnId?: string, mode?: CopilotSdkMode): Promise<void> {
 		if (turnId) {
-			this.resetTurnState(turnId);
+			this._turnId = turnId;
+			this._turnCopilotUsageTotalNanoAiu = 0;
 		}
 		this._logService.info(`[Copilot:${this.sessionId}] sendMessage called: "${prompt.substring(0, 100)}${prompt.length > 100 ? '...' : ''}" (${attachments?.length ?? 0} attachments)`);
 
