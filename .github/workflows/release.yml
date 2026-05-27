@@ -1,0 +1,24 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - name: Build Flasha extension
+        working-directory: extensions/flasha-code
+        run: |
+          npm install
+          npx tsc -b tsconfig.json
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: extensions/flasha-code/out/**
