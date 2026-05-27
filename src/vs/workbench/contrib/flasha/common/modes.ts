@@ -1,0 +1,166 @@
+export enum FlashaMode {
+  AUTO = 'auto',
+  PLAN = 'plan',
+  BUILD = 'build',
+  CHAT = 'chat',
+  REVIEW = 'review',
+  DEBUG = 'debug',
+  TEST = 'test',
+  DOCUMENT = 'document',
+  REFACTOR = 'refactor',
+  SECURITY = 'security',
+  DEPLOY = 'deploy',
+  ANALYZE = 'analyze',
+  DESIGN = 'design',
+  MIGRATE = 'migrate',
+  GIT = 'git',
+}
+
+export interface FlashaModeConfig {
+  id: FlashaMode;
+  label: string;
+  labelAr: string;
+  icon: string;
+  description: string;
+  defaultModel: string;
+}
+
+export const MODE_CONFIGS: Record<FlashaMode, FlashaModeConfig> = {
+  [FlashaMode.AUTO]: {
+    id: FlashaMode.AUTO,
+    label: 'Auto',
+    labelAr: 'ØªÙ„Ù‚Ø§Ø¦ÙŠ',
+    icon: 'sparkle',
+    description: 'ÙŠÙƒØªØ´Ù Ø§Ù„ÙˆØ¶Ø¹ Ø§Ù„Ù…Ù†Ø§Ø³Ø¨ ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.PLAN]: {
+    id: FlashaMode.PLAN,
+    label: 'Plan',
+    labelAr: 'ØªØ®Ø·ÙŠØ·',
+    icon: 'lightbulb',
+    description: 'ÙŠØ®Ø·Ø· Ù„Ù„Ù…Ø´Ø±ÙˆØ¹ Ù‚Ø¨Ù„ Ø§Ù„ØªÙ†ÙÙŠØ°',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.BUILD]: {
+    id: FlashaMode.BUILD,
+    label: 'Build',
+    labelAr: 'Ø¨Ù†Ø§Ø¡',
+    icon: 'symbol-ruler',
+    description: 'ÙŠØ¨Ù†ÙŠ Ø§Ù„Ù…Ù„ÙØ§Øª ÙˆØ§Ù„Ù…Ø´Ø§Ø±ÙŠØ¹',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.CHAT]: {
+    id: FlashaMode.CHAT,
+    label: 'Chat',
+    labelAr: 'Ø¯Ø±Ø¯Ø´Ø©',
+    icon: 'comment-discussion',
+    description: 'Ø¯Ø±Ø¯Ø´Ø© Ø¹Ø§Ø¯ÙŠØ© Ø¹Ù† Ø§Ù„ÙƒÙˆØ¯',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.REVIEW]: {
+    id: FlashaMode.REVIEW,
+    label: 'Review',
+    labelAr: 'Ù…Ø±Ø§Ø¬Ø¹Ø©',
+    icon: 'eye',
+    description: 'ÙŠØ±Ø§Ø¬Ø¹ Ø§Ù„ÙƒÙˆØ¯ ÙˆÙŠØ¨Ù„Øº Ø¹Ù† Ø§Ù„Ù…Ø´Ø§ÙƒÙ„',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.DEBUG]: {
+    id: FlashaMode.DEBUG,
+    label: 'Debug',
+    labelAr: 'ØªØµØ­ÙŠØ­',
+    icon: 'bug',
+    description: 'ÙŠØµØ­Ø­ Ø§Ù„Ø£Ø®Ø·Ø§Ø¡',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.TEST]: {
+    id: FlashaMode.TEST,
+    label: 'Test',
+    labelAr: 'Ø§Ø®ØªØ¨Ø§Ø±',
+    icon: 'beaker',
+    description: 'ÙŠÙƒØªØ¨ Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.DOCUMENT]: {
+    id: FlashaMode.DOCUMENT,
+    label: 'Document',
+    labelAr: 'ØªÙˆØ«ÙŠÙ‚',
+    icon: 'book',
+    description: 'ÙŠÙˆØ«Ù‚ Ø§Ù„ÙƒÙˆØ¯',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.REFACTOR]: {
+    id: FlashaMode.REFACTOR,
+    label: 'Refactor',
+    labelAr: 'ØªØ­Ø³ÙŠÙ†',
+    icon: 'refactor',
+    description: 'ÙŠØ¹ÙŠØ¯ Ù‡ÙŠÙƒÙ„Ø© Ø§Ù„ÙƒÙˆØ¯',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.SECURITY]: {
+    id: FlashaMode.SECURITY,
+    label: 'Security',
+    labelAr: 'Ø£Ù…Ø§Ù†',
+    icon: 'shield',
+    description: 'ÙŠÙØ­Øµ Ø§Ù„Ø«ØºØ±Ø§Øª Ø§Ù„Ø£Ù…Ù†ÙŠØ©',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.DEPLOY]: {
+    id: FlashaMode.DEPLOY,
+    label: 'Deploy',
+    labelAr: 'Ù†Ø´Ø±',
+    icon: 'rocket',
+    description: 'ÙŠÙ†Ø´Ø± Ø§Ù„Ù…Ø´Ø±ÙˆØ¹',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.ANALYZE]: {
+    id: FlashaMode.ANALYZE,
+    label: 'Analyze',
+    labelAr: 'ØªØ­Ù„ÙŠÙ„',
+    icon: 'graph',
+    description: 'ÙŠØ­Ù„Ù„ Ø§Ù„Ø£Ø¯Ø§Ø¡',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.DESIGN]: {
+    id: FlashaMode.DESIGN,
+    label: 'Design',
+    labelAr: 'ØªØµÙ…ÙŠÙ…',
+    icon: 'paintcan',
+    description: 'ÙŠØµÙ…Ù… Ø§Ù„ÙˆØ§Ø¬Ù‡Ø§Øª',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.MIGRATE]: {
+    id: FlashaMode.MIGRATE,
+    label: 'Migrate',
+    labelAr: 'ØªØ±Ø­ÙŠÙ„',
+    icon: 'arrow-swap',
+    description: 'ÙŠØ±Ø­Ù„ Ø¨ÙŠÙ† Ø§Ù„ØªÙ‚Ù†ÙŠØ§Øª',
+    defaultModel: 'opencode/big-pickle',
+  },
+  [FlashaMode.GIT]: {
+    id: FlashaMode.GIT,
+    label: 'Git',
+    labelAr: 'Ø¬ÙŠØª',
+    icon: 'git-branch',
+    description: 'Ø£ÙˆØ§Ù…Ø± Git',
+    defaultModel: 'opencode/big-pickle',
+  },
+};
+
+export const AUTO_MODE_KEYWORDS: Record<string, FlashaMode> = {
+  'Ø®Ø·Ø·|plan|ØµÙ…Ù… Ù„ÙŠ|design for me|Ø£Ø­ØªØ§Ø¬ ÙÙƒØ±Ø©': FlashaMode.PLAN,
+  'Ø§Ø¨Ù†ÙŠ|Ø§Ø¹Ù…Ù„|Ø£Ù†Ø´Ø¦|build|create|make|Ø¹Ø§ÙŠØ² Ù…ÙˆÙ‚Ø¹|Ø¹Ø§ÙŠØ² ØµÙØ­Ø©': FlashaMode.BUILD,
+  'Ø¥ÙŠÙ‡ Ø§Ù„ÙØ±Ù‚|Ø§Ø´Ø±Ø­|explain|what is|Ù„ÙŠÙ‡ Ø¨Ù†Ø³ØªØ®Ø¯Ù…|Ø¥ÙŠÙ‡ Ø±Ø£ÙŠÙƒ': FlashaMode.CHAT,
+  'Ø±Ø§Ø¬Ø¹|review|check|ÙÙŠÙ‡ Ù…Ø´ÙƒÙ„Ø©|Ø´ÙˆÙ Ø§Ù„ÙƒÙˆØ¯': FlashaMode.REVIEW,
+  'error|Ø®Ø·Ø£|Ù…Ø´ Ø´ØºØ§Ù„|Ø¨Ø§Ø¬|bug|fix|ØµÙ„Ø­|crashed|Ø¨ÙŠÙ‚Ø¹': FlashaMode.DEBUG,
+  'test|Ø§Ø®ØªØ¨Ø±|Ø§ÙƒØªØ¨ ØªÙŠØ³Øª|unit test|Ø§Ø®ØªØ¨Ø§Ø±': FlashaMode.TEST,
+  'ÙˆØ«Ù‚|document|Ø§ÙƒØªØ¨ docs|Ø´Ø±Ø­ Ø§Ù„ÙƒÙˆØ¯|add comments': FlashaMode.DOCUMENT,
+  'Ø­Ø³Ù†|refactor|Ù†Ø¸Ù|clean|optimize|Ø£Ø³Ø±Ø¹|Ø®ÙÙ': FlashaMode.REFACTOR,
+  'Ø£Ù…Ø§Ù†|security|Ø«ØºØ±Ø©|vulnerability|hack|Ø­Ù…Ø§ÙŠØ©': FlashaMode.SECURITY,
+  'Ø§Ù†Ø´Ø±|deploy|Ø§Ø±ÙØ¹|publish|vercel|hosting': FlashaMode.DEPLOY,
+  'Ø­Ù„Ù„|analyze|Ø£Ø¯Ø§Ø¡|performance|Ø¨Ø·ÙŠØ¡|slow': FlashaMode.ANALYZE,
+  'ØµÙ…Ù…|design|UI|ÙˆØ§Ø¬Ù‡Ø©|Ø´ÙƒÙ„|Ø³ØªØ§ÙŠÙ„|Ù„ÙˆÙ†': FlashaMode.DESIGN,
+  'Ø­ÙˆÙ„|migrate|convert|ØºÙŠØ± Ù…Ù†|Ø§Ù†Ù‚Ù„|upgrade': FlashaMode.MIGRATE,
+  'commit|push|pull|branch|merge|ÙØ±Ø¹|Ø§Ø¯ÙØ¹': FlashaMode.GIT,
+};
