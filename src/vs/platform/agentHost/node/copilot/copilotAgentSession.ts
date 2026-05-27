@@ -567,8 +567,7 @@ export class CopilotAgentSession extends Disposable {
 
 	/**
 	 * Resets per-turn streaming state so the next text/reasoning chunk
-	 * allocates a fresh response part when the session starts a turn without
-	 * going through the normal send path.
+	 * allocates a fresh response part for the new turn.
 	 */
 	resetTurnState(turnId: string): void {
 		this._turnId = turnId;
