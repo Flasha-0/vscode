@@ -74,7 +74,7 @@ export interface SessionTurnStartedAction {
 	turnId: string;
 	/** User's message */
 	userMessage: UserMessage;
-	/** Compact label for a system-initiated turn. */
+	/** Display label for a system-initiated turn. */
 	systemInitiatedLabel?: string;
 	/** If this turn was auto-started from a queued message, the ID of that message */
 	queuedMessageId?: string;
