@@ -15,12 +15,16 @@ export class CheckpointsService {
   async save(label: string): Promise<string> {
     const id = `cp_${Date.now()}`;
     const files: Record<string, string> = {};
-    const wsFiles = await vscode.workspace.findFiles('**/*.{ts,js,tsx,jsx,py,rs,go,c,cpp,h,hpp,json,yaml,yml,toml}',
-      '**/{node_modules,target,dist,build,.git,__pycache__}/**');
-    for (const uri of wsFiles.slice(0, 50)) {
+    const wsFiles = await vscode.workspace.findFiles(
+      '**/*.{ts,js,tsx,jsx,py,rs,go,c,cpp,h,hpp,json,yaml,yml,toml}',
+      '**/{node_modules,target,dist,build,.git,__pycache__}/**',
+      50
+    );
+    const decoder = new TextDecoder();
+    for (const uri of wsFiles) {
       try {
         const content = await vscode.workspace.fs.readFile(uri);
-        files[uri.fsPath] = Buffer.from(content).toString('utf-8');
+        files[uri.fsPath] = decoder.decode(content);
       } catch {}
     }
     const checkpoint: Checkpoint = { id, label, timestamp: Date.now(), files };
@@ -34,15 +38,16 @@ export class CheckpointsService {
     const all = await this.list();
     const cp = all.find(c => c.id === id);
     if (!cp) throw new Error(`Checkpoint ${id} not found`);
+    const encoder = new TextEncoder();
     for (const [path, content] of Object.entries(cp.files)) {
       try {
-        await vscode.workspace.fs.writeFile(vscode.Uri.file(path), Buffer.from(content));
+        await vscode.workspace.fs.writeFile(vscode.Uri.file(path), encoder.encode(content));
       } catch {}
     }
   }
 
   async list(): Promise<Checkpoint[]> {
-    const raw = this.context.globalState.get<string>(CheckpointsService.STORAGE_KEY);
+    const raw = await Promise.resolve(this.context.globalState.get<string>(CheckpointsService.STORAGE_KEY));
     return raw ? JSON.parse(raw) : [];
   }
 
