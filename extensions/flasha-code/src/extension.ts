@@ -6,6 +6,9 @@ import { AutoModeDetector } from './autoModeDetector';
 import { MemoryService } from './memoryService';
 import { RulesService } from './rulesService';
 import { CheckpointsService } from './checkpointsService';
+import { FlashaStatusBar } from './statusBar';
+import { GitHubService } from './githubService';
+import { VercelService } from './vercelService';
 
 export function activate(context: vscode.ExtensionContext) {
   const modeManager = new FlashaModeManager();
@@ -14,6 +17,10 @@ export function activate(context: vscode.ExtensionContext) {
   const memory = new MemoryService(context);
   const rules = new RulesService(context);
   const checkpoints = new CheckpointsService(context);
+  const git = new GitHubService();
+  const vercel = new VercelService();
+
+  new FlashaStatusBar(modeManager);
 
   context.subscriptions.push(
     vscode.commands.registerCommand('flasha.chat', () => {
@@ -25,8 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('flasha.setMode', async () => {
       const selected = await vscode.window.showQuickPick(
         modeManager.getAllModes().map(m => ({
-          label: m,
-          description: modeManager.getLabel(m)
+          label: m, description: modeManager.getLabel(m)
         }))
       );
       if (selected) {
@@ -70,12 +76,26 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.git.clone', () => {
+      vscode.window.showInputBox({ prompt: 'GitHub repo URL' })
+        .then(url => { if (url) git.clone(url, vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || ''); });
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.deploy', () => vercel.deploy())
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.deploy.preview', () => vercel.deployPreview())
+  );
+
+  context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('flasha.chat',
       new ChatViewProvider(context, modeManager, opencode, autoDetect, memory))
   );
 
   vscode.commands.executeCommand('setContext', 'flasha.mode', 'auto');
-
   opencode.start();
   rules.detectProjectRules();
 }
