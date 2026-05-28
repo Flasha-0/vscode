@@ -5,44 +5,152 @@
   "version": "1.0.0",
   "publisher": "Flasha Code",
   "license": "MIT",
-  "icon": "icon.svg",
-  "engines": { "vscode": "^1.98.0" },
-  "categories": ["Chat", "Programming Languages", "Other"],
-  "activationEvents": ["onStartupFinished"],
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.98.0"
+  },
+  "categories": [
+    "Chat",
+    "Programming Languages",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./dist/extension.js",
-  "localizedLanguages": ["ar","en","es","fr","zh","hi","pt"],
+  "localizedLanguages": [
+    "ar",
+    "en",
+    "es",
+    "fr",
+    "zh",
+    "hi",
+    "pt"
+  ],
   "contributes": {
     "commands": [
-      { "command": "flasha.chat", "title": "Open Flasha Chat", "category": "Flasha" },
-      { "command": "flasha.setMode", "title": "Set Mode", "category": "Flasha" },
-      { "command": "flasha.checkpoint.save", "title": "Save Checkpoint", "category": "Flasha" },
-      { "command": "flasha.checkpoint.restore", "title": "Restore Checkpoint", "category": "Flasha" },
-      { "command": "flasha.rules.generate", "title": "Auto-Generate Rules", "category": "Flasha" },
-      { "command": "flasha.git.clone", "title": "Clone Repository", "category": "Flasha" },
-      { "command": "flasha.deploy", "title": "Deploy to Vercel", "category": "Flasha" },
-      { "command": "flasha.deploy.preview", "title": "Deploy Preview to Vercel", "category": "Flasha" },
-      { "command": "flasha.preview", "title": "Live Preview", "category": "Flasha" },
-      { "command": "flasha.supabase.connect", "title": "Connect Supabase", "category": "Flasha" },
-      { "command": "flasha.terminal", "title": "Open Smart Terminal", "category": "Flasha" },
-      { "command": "flasha.terminal.run", "title": "AI Suggest Command", "category": "Flasha" }
+      {
+        "command": "flasha.chat",
+        "title": "Open Flasha Chat",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.setMode",
+        "title": "Set Mode",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.checkpoint.save",
+        "title": "Save Checkpoint",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.checkpoint.restore",
+        "title": "Restore Checkpoint",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.rules.generate",
+        "title": "Auto-Generate Rules",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.git.clone",
+        "title": "Clone Repository",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.deploy",
+        "title": "Deploy to Vercel",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.deploy.preview",
+        "title": "Deploy Preview to Vercel",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.preview",
+        "title": "Live Preview",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.supabase.connect",
+        "title": "Connect Supabase",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.terminal",
+        "title": "Open Smart Terminal",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.terminal.run",
+        "title": "AI Suggest Command",
+        "category": "Flasha"
+      }
     ],
     "viewsContainers": {
       "activitybar": [
-        { "id": "flasha", "title": "Flasha Code", "icon": "icon.svg" }
+        {
+          "id": "flasha",
+          "title": "Flasha Code",
+          "icon": "icon.svg"
+        }
       ]
     },
     "views": {
       "flasha": [
-        { "type": "webview", "id": "flasha.chat", "name": "Chat" }
+        {
+          "type": "webview",
+          "id": "flasha.chat",
+          "name": "Chat"
+        }
       ]
     },
     "configuration": {
       "title": "Flasha Code",
       "properties": {
-        "flasha.defaultModel": { "type": "string", "default": "opencode/big-pickle", "description": "Default AI model" },
-        "flasha.defaultMode": { "type": "string", "default": "auto", "enum": ["auto","plan","build","chat","review","debug","test","document","refactor","security","deploy","analyze","design","migrate","git"] },
-        "flasha.language": { "type": "string", "default": "ar", "enum": ["ar","en"], "description": "UI language" },
-        "flasha.opencodePort": { "type": "number", "default": 4096, "description": "OpenCode server port" }
+        "flasha.defaultModel": {
+          "type": "string",
+          "default": "opencode/big-pickle",
+          "description": "Default AI model"
+        },
+        "flasha.defaultMode": {
+          "type": "string",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "plan",
+            "build",
+            "chat",
+            "review",
+            "debug",
+            "test",
+            "document",
+            "refactor",
+            "security",
+            "deploy",
+            "analyze",
+            "design",
+            "migrate",
+            "git"
+          ]
+        },
+        "flasha.language": {
+          "type": "string",
+          "default": "ar",
+          "enum": [
+            "ar",
+            "en"
+          ],
+          "description": "UI language"
+        },
+        "flasha.opencodePort": {
+          "type": "number",
+          "default": 4096,
+          "description": "OpenCode server port"
+        }
       }
     }
   },
@@ -52,6 +160,7 @@
     "package": "npx vsce package --no-dependencies"
   },
   "devDependencies": {
+    "@types/node": "^25.9.1",
     "@types/vscode": "^1.98.0",
     "typescript": "^5.7.0"
   },
