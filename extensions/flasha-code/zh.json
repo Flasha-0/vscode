@@ -1,0 +1,23 @@
+{
+  "flasha.brandName": "Flasha Code",
+  "flasha.chat.placeholder": "è¾“å…¥æ‚¨çš„æ¶ˆæ¯...",
+  "flasha.chat.send": "å‘é€",
+  "flasha.mode.auto": "è‡ªåŠ¨",
+  "flasha.mode.plan": "è®¡åˆ’",
+  "flasha.mode.build": "æž„å»º",
+  "flasha.mode.chat": "èŠå¤©",
+  "flasha.mode.review": "å®¡æŸ¥",
+  "flasha.mode.debug": "è°ƒè¯•",
+  "flasha.mode.test": "æµ‹è¯•",
+  "flasha.mode.document": "æ–‡æ¡£",
+  "flasha.mode.refactor": "é‡æž„",
+  "flasha.mode.security": "å®‰å…¨",
+  "flasha.mode.deploy": "éƒ¨ç½²",
+  "flasha.mode.analyze": "åˆ†æž",
+  "flasha.mode.design": "è®¾è®¡",
+  "flasha.mode.migrate": "è¿ç§»",
+  "flasha.mode.git": "Git",
+  "flasha.git.commit": "æäº¤",
+  "flasha.git.push": "æŽ¨é€",
+  "flasha.deploy.button": "éƒ¨ç½²åˆ° Vercel"
+}
