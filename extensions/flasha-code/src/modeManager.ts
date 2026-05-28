@@ -1,21 +1,21 @@
 import * as vscode from 'vscode';
 
 const MODE_LABELS: Record<string, { ar: string; en: string }> = {
-  auto: { ar: 'ØªÙ„Ù‚Ø§Ø¦ÙŠ', en: 'Auto' },
-  plan: { ar: 'ØªØ®Ø·ÙŠØ·', en: 'Plan' },
-  build: { ar: 'Ø¨Ù†Ø§Ø¡', en: 'Build' },
-  chat: { ar: 'Ø¯Ø±Ø¯Ø´Ø©', en: 'Chat' },
-  review: { ar: 'Ù…Ø±Ø§Ø¬Ø¹Ø©', en: 'Review' },
-  debug: { ar: 'ØªØµØ­ÙŠØ­', en: 'Debug' },
-  test: { ar: 'Ø§Ø®ØªØ¨Ø§Ø±', en: 'Test' },
-  document: { ar: 'ØªÙˆØ«ÙŠÙ‚', en: 'Document' },
-  refactor: { ar: 'ØªØ­Ø³ÙŠÙ†', en: 'Refactor' },
-  security: { ar: 'Ø£Ù…Ø§Ù†', en: 'Security' },
-  deploy: { ar: 'Ù†Ø´Ø±', en: 'Deploy' },
-  analyze: { ar: 'ØªØ­Ù„ÙŠÙ„', en: 'Analyze' },
-  design: { ar: 'ØªØµÙ…ÙŠÙ…', en: 'Design' },
-  migrate: { ar: 'ØªØ±Ø­ÙŠÙ„', en: 'Migrate' },
-  git: { ar: 'Ø¬ÙŠØª', en: 'Git' },
+  auto: { ar: 'تلقائي', en: 'Auto' },
+  plan: { ar: 'تخطيط', en: 'Plan' },
+  build: { ar: 'بناء', en: 'Build' },
+  chat: { ar: 'دردشة', en: 'Chat' },
+  review: { ar: 'مراجعة', en: 'Review' },
+  debug: { ar: 'تصحيح', en: 'Debug' },
+  test: { ar: 'اختبار', en: 'Test' },
+  document: { ar: 'توثيق', en: 'Document' },
+  refactor: { ar: 'تحسين', en: 'Refactor' },
+  security: { ar: 'أمان', en: 'Security' },
+  deploy: { ar: 'نشر', en: 'Deploy' },
+  analyze: { ar: 'تحليل', en: 'Analyze' },
+  design: { ar: 'تصميم', en: 'Design' },
+  migrate: { ar: 'ترحيل', en: 'Migrate' },
+  git: { ar: 'جيت', en: 'Git' },
 };
 
 export class FlashaModeManager {

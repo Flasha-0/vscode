@@ -13,6 +13,19 @@ import { LivePreviewService } from './livePreviewService';
 import { SupabaseService } from './supabaseService';
 import { HooksService } from './hooksService';
 import { SmartTerminal } from './smartTerminal';
+import { FlashDirectoryService } from './flashDirectoryService';
+import { ProviderRegistry } from './providers/providerRegistry';
+import { MCPManager } from './mcp/mcpManager';
+import { GitHubMcp } from './mcp/githubMcp';
+import { SupabaseMcp } from './mcp/supabaseMcp';
+import { PlaywrightMcp } from './mcp/playwrightMcp';
+import { FigmaMcp } from './mcp/figmaMcp';
+import { TemplateManager } from './templateManager';
+import { ApiTesterService } from './apiTester';
+import { FirebaseService } from './firebaseService';
+import { AnalyticsService } from './analyticsService';
+import { EnvironmentManagerService } from './environmentManager';
+import { AgentService } from './agents/agentService';
 
 export function activate(context: vscode.ExtensionContext) {
   const modeManager = new FlashaModeManager();
@@ -28,6 +41,19 @@ export function activate(context: vscode.ExtensionContext) {
   const supabase = new SupabaseService();
   const hooks = new HooksService(context);
   const terminal = new SmartTerminal();
+  const providers = new ProviderRegistry();
+  const mcp = new MCPManager();
+  const templates = new TemplateManager();
+  const apiTester = new ApiTesterService();
+  const firebase = new FirebaseService();
+  const analytics = new AnalyticsService();
+  const envManager = new EnvironmentManagerService();
+  const agents = new AgentService();
+
+  mcp.register(new GitHubMcp());
+  mcp.register(new SupabaseMcp());
+  mcp.register(new PlaywrightMcp());
+  mcp.register(new FigmaMcp());
 
   new FlashaStatusBar(modeManager);
 
@@ -124,6 +150,109 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('flasha.chat',
       new ChatViewProvider(context, modeManager, opencode, autoDetect, memory))
+  );
+
+  const flashDir = new FlashDirectoryService();
+  const wsRoot = flashDir.getWorkspaceRoot();
+  if (wsRoot) {
+    flashDir.ensureDirectory(wsRoot);
+  }
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.init', async () => {
+      const root = flashDir.getWorkspaceRoot();
+      if (root) {
+        await flashDir.ensureDirectory(root);
+        vscode.window.showInformationMessage('Flasha directory initialized');
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.template', async () => {
+      const list = await templates.listTemplates();
+      const picked = await vscode.window.showQuickPick(
+        list.map(t => ({ label: t.name, description: t.description }))
+      );
+      if (picked && vscode.workspace.workspaceFolders?.[0]) {
+        await templates.scaffold(
+          list.find(t => t.name === picked.label)!.id,
+          vscode.workspace.workspaceFolders[0].uri
+        );
+        vscode.window.showInformationMessage(`Scaffolded: ${picked.label}`);
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.api', async () => {
+      const url = await vscode.window.showInputBox({ prompt: 'API URL' });
+      if (url) {
+        const result = await apiTester.send({ method: 'GET', url, headers: {} });
+        vscode.window.showInformationMessage(`${result.status}: ${result.body.slice(0, 100)}`);
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.firebase.connect', () => firebase.connect())
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.analytics', async () => {
+      const summary = await analytics.getSummary();
+      const items = summary.map(s => `${s.event}: ${s.count}`);
+      vscode.window.showQuickPick(items);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.env.switch', async () => {
+      const envs = envManager.detectEnvironments();
+      const picked = await vscode.window.showQuickPick(envs);
+      if (picked) await envManager.switchEnv(picked);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.providers', async () => {
+      const list = providers.getAll();
+      const items = await Promise.all(list.map(async p => ({
+        label: p.name,
+        description: `${p.models.length} models - ${await p.isAvailable() ? '✓' : '✗'}`,
+      })));
+      vscode.window.showQuickPick(items);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.agents.list', async () => {
+      const list = agents.getAgents();
+      const picked = await vscode.window.showQuickPick(
+        list.map(a => ({ label: `${a.icon} ${a.name}`, description: a.description }))
+      );
+      if (picked) {
+        const agent = list.find(a => `${a.icon} ${a.name}` === picked.label);
+        if (agent) await agents.runAgent(agent.id);
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.agents.run', async () => {
+      const list = agents.getAgents();
+      const picked = await vscode.window.showQuickPick(
+        list.map(a => ({ label: `${a.icon} ${a.name}`, description: a.description }))
+      );
+      if (picked) {
+        const agent = list.find(a => `${a.icon} ${a.name}` === picked.label);
+        if (agent) await agents.runAgent(agent.id);
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.agents.review', () => agents.runAgent('code-review'))
   );
 
   vscode.commands.executeCommand('setContext', 'flasha.mode', 'auto');

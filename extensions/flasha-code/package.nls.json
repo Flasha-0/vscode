@@ -1,6 +1,6 @@
 {
   "displayName": "Flasha Code",
-  "description": "AI-powered development environment with 15 modes, chat, and smart agents",
+  "description": "AI-powered VS Code extension: 15 modes, chat, background agents, MCP servers, memory & rules system, GitHub/Supabase/Vercel/Firebase integrations, API tester, live preview, 7 languages, template gallery",
   "flasha.chat": "Open Flasha Chat",
   "flasha.setMode": "Set Mode",
   "flasha.checkpoint.save": "Save Checkpoint",
@@ -12,5 +12,15 @@
   "flasha.preview": "Live Preview",
   "flasha.supabase.connect": "Connect Supabase",
   "flasha.terminal": "Open Smart Terminal",
-  "flasha.terminal.run": "AI Suggest Command"
+  "flasha.terminal.run": "AI Suggest Command",
+  "flasha.init": "Init Flasha Directory",
+  "flasha.template": "Scaffold from Template",
+  "flasha.api": "API Tester",
+  "flasha.firebase.connect": "Connect Firebase",
+  "flasha.analytics": "Show Analytics",
+  "flasha.env.switch": "Switch Environment",
+  "flasha.providers": "Show LLM Providers",
+  "flasha.agents.list": "Run Background Agent",
+  "flasha.agents.run": "Run Agent...",
+  "flasha.agents.review": "Quick Code Review"
 }

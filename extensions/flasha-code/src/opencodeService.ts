@@ -40,7 +40,7 @@ export class OpenCodeService {
       console.log(`[Flasha] OpenCode started on port ${this.port}`);
       setTimeout(() => this.connectWs(), 1500);
     } catch (e) {
-      console.warn('[Flasha] OpenCode CLI not found â€” install with: npm i -g @opencode/cli');
+      console.warn('[Flasha] OpenCode CLI not found — install with: npm i -g @opencode/cli');
     }
   }
 

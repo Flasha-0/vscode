@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
+import { FlashDirectoryService } from './flashDirectoryService';
 
 export class RulesService {
   private fileWatcher: vscode.FileSystemWatcher | undefined;
+  private flashDir = new FlashDirectoryService();
 
   constructor(private context: vscode.ExtensionContext) {}
 
@@ -21,7 +23,6 @@ export class RulesService {
 
   async autoGenerateRules(projectRoot: vscode.Uri): Promise<void> {
     const techs = await this.detectTechStack(projectRoot);
-    const rulesPath = vscode.Uri.joinPath(projectRoot, '.flasharules');
     const lines = [
       '# Flasha Code - Project Rules (Auto-generated)',
       `# Detected: ${techs.join(', ')}`,
@@ -31,8 +32,21 @@ export class RulesService {
       '- Write self-documenting code',
       ...techs.map(t => `- Respect ${t} best practices`),
     ];
-    const encoder = new TextEncoder();
-    await vscode.workspace.fs.writeFile(rulesPath, encoder.encode(lines.join('\n')));
+    const content = lines.join('\n');
+
+    const rulesFile = this.flashDir.getRulesFile(projectRoot);
+    if (rulesFile) {
+      await this.flashDir.ensureDirectory(projectRoot);
+      await this.flashDir.writeTextFile(rulesFile, content);
+    }
+
+    const rootRules = vscode.Uri.joinPath(projectRoot, '.flasharules');
+    await vscode.workspace.fs.writeFile(rootRules, new TextEncoder().encode(content));
+  }
+
+  async getFlashRules(projectRoot?: vscode.Uri): Promise<string | undefined> {
+    const file = this.flashDir.getRulesFile(projectRoot);
+    return file ? this.flashDir.readTextFile(file) : undefined;
   }
 
   private async detectTechStack(root: vscode.Uri): Promise<string[]> {

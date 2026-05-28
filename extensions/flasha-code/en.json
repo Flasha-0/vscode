@@ -1,6 +1,6 @@
 {
   "flasha.brandName": "Flasha Code",
-  "flasha.chat.placeholder": "Type your message here...",
+  "flasha.chat.placeholder": "Type your message...",
   "flasha.chat.send": "Send",
   "flasha.mode.auto": "Auto",
   "flasha.mode.plan": "Plan",
@@ -17,11 +17,7 @@
   "flasha.mode.design": "Design",
   "flasha.mode.migrate": "Migrate",
   "flasha.mode.git": "Git",
-  "flasha.model.default": "Default Model",
-  "flasha.model.picker": "Model Picker",
   "flasha.git.commit": "Commit",
   "flasha.git.push": "Push",
-  "flasha.git.pull": "Pull",
-  "flasha.deploy.button": "Deploy to Vercel",
-  "flasha.supabase.connect": "Connect Supabase"
+  "flasha.deploy.button": "Deploy to Vercel"
 }
