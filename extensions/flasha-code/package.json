@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "publisher": "Flasha Code",
   "license": "MIT",
-  "icon": "icon.png",
+  "icon": "icon.svg",
   "engines": { "vscode": "^1.98.0" },
   "categories": ["Chat", "Programming Languages", "Other"],
   "activationEvents": ["onStartupFinished"],
