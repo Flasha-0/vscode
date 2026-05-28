@@ -11,6 +11,8 @@ import { GitHubService } from './githubService';
 import { VercelService } from './vercelService';
 import { LivePreviewService } from './livePreviewService';
 import { SupabaseService } from './supabaseService';
+import { HooksService } from './hooksService';
+import { SmartTerminal } from './smartTerminal';
 
 export function activate(context: vscode.ExtensionContext) {
   const modeManager = new FlashaModeManager();
@@ -23,6 +25,8 @@ export function activate(context: vscode.ExtensionContext) {
   const vercel = new VercelService();
   const preview = new LivePreviewService();
   const supabase = new SupabaseService();
+  const hooks = new HooksService(context);
+  const terminal = new SmartTerminal();
 
   new FlashaStatusBar(modeManager);
 
@@ -100,6 +104,20 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('flasha.supabase.connect', () => supabase.connect())
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.terminal', () => terminal.show())
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.terminal.run', async () => {
+      const input = await vscode.window.showInputBox({ prompt: 'What do you want to do?' });
+      if (input) {
+        const cmd = await terminal.suggestCommand(input);
+        terminal.executeInContext(cmd);
+      }
+    })
   );
 
   context.subscriptions.push(
