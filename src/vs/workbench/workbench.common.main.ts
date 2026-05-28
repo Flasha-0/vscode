@@ -466,6 +466,7 @@ import './contrib/editTelemetry/browser/editTelemetry.contribution.js';
 
 
 // Flasha Code
-import './contrib/flasha/flasha.contribution.js';import './contrib/opener/browser/opener.contribution.js';
+import './contrib/flasha/flasha.contribution.js';
+import './contrib/opener/browser/opener.contribution.js';
 
 //#endregion
