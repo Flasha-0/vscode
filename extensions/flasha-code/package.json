@@ -1,7 +1,7 @@
 {
   "name": "flasha-code",
   "displayName": "Flasha Code",
-  "description": "AI-powered development environment with 15 modes, chat, and smart agents",
+  "description": "AI-powered VS Code extension: 15 modes, chat, background agents, MCP servers, memory & rules system, GitHub/Supabase/Vercel/Firebase integrations, API tester, live preview, 7 languages, template gallery",
   "version": "1.0.0",
   "publisher": "Flasha Code",
   "license": "MIT",
