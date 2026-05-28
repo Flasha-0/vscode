@@ -2,10 +2,18 @@ import * as vscode from 'vscode';
 import { ChatViewProvider } from './chatViewProvider';
 import { FlashaModeManager } from './modeManager';
 import { OpenCodeService } from './opencodeService';
+import { AutoModeDetector } from './autoModeDetector';
+import { MemoryService } from './memoryService';
+import { RulesService } from './rulesService';
+import { CheckpointsService } from './checkpointsService';
 
 export function activate(context: vscode.ExtensionContext) {
   const modeManager = new FlashaModeManager();
   const opencode = OpenCodeService.getInstance(context);
+  const autoDetect = new AutoModeDetector(modeManager);
+  const memory = new MemoryService(context);
+  const rules = new RulesService(context);
+  const checkpoints = new CheckpointsService(context);
 
   context.subscriptions.push(
     vscode.commands.registerCommand('flasha.chat', () => {
@@ -15,22 +23,61 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('flasha.setMode', async () => {
-      const modes = ['auto','plan','build','chat','review','debug','test','document','refactor','security','deploy','analyze','design','migrate','git'];
-      const selected = await vscode.window.showQuickPick(modes.map(m => ({ label: m, description: modeManager.getLabel(m) })));
+      const selected = await vscode.window.showQuickPick(
+        modeManager.getAllModes().map(m => ({
+          label: m,
+          description: modeManager.getLabel(m)
+        }))
+      );
       if (selected) {
         modeManager.setMode(selected.label);
-        vscode.window.showInformationMessage(`Flasha Code: Mode set to ${selected.label}`);
+        vscode.window.showInformationMessage(`Flasha: ${modeManager.getLabel(selected.label)}`);
       }
     })
   );
 
   context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider('flasha.chat', new ChatViewProvider(context, modeManager))
+    vscode.commands.registerCommand('flasha.checkpoint.save', async () => {
+      const label = await vscode.window.showInputBox({ prompt: 'Checkpoint label' });
+      if (label) {
+        const id = await checkpoints.save(label);
+        vscode.window.showInformationMessage(`Checkpoint saved: ${id}`);
+      }
+    })
   );
 
-  opencode.start();
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.checkpoint.restore', async () => {
+      const list = await checkpoints.list();
+      const picked = await vscode.window.showQuickPick(
+        list.map(c => ({ label: c.label, description: c.id }))
+      );
+      if (picked) {
+        await checkpoints.restore(picked.description!);
+        vscode.window.showInformationMessage('Checkpoint restored');
+      }
+    })
+  );
 
-  console.log('[Flasha Code] Activated');
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.rules.generate', async () => {
+      const wsFolder = vscode.workspace.workspaceFolders?.[0];
+      if (wsFolder) {
+        await rules.autoGenerateRules(wsFolder.uri);
+        vscode.window.showInformationMessage('Rules generated');
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider('flasha.chat',
+      new ChatViewProvider(context, modeManager, opencode, autoDetect, memory))
+  );
+
+  vscode.commands.executeCommand('setContext', 'flasha.mode', 'auto');
+
+  opencode.start();
+  rules.detectProjectRules();
 }
 
 export function deactivate() {
