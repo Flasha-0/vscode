@@ -11,14 +11,10 @@ export class MemoryService {
 
   constructor(private context: vscode.ExtensionContext) {}
 
-  private get storage(): vscode.SecretStorage | vscode.Memento {
-    return this.context.globalState;
-  }
-
   async set(key: string, value: string): Promise<void> {
     const entries = await this.getAll();
     entries.push({ key, value, timestamp: Date.now() });
-    await this.storage.update(MemoryService.STORAGE_KEY, JSON.stringify(entries));
+    await this.context.globalState.update(MemoryService.STORAGE_KEY, JSON.stringify(entries));
   }
 
   async get(key: string): Promise<string | undefined> {
@@ -27,7 +23,7 @@ export class MemoryService {
   }
 
   async getAll(): Promise<MemoryEntry[]> {
-    const raw = this.storage.get<string>(MemoryService.STORAGE_KEY);
+    const raw = await Promise.resolve(this.context.globalState.get<string>(MemoryService.STORAGE_KEY));
     return raw ? JSON.parse(raw) : [];
   }
 
@@ -40,6 +36,6 @@ export class MemoryService {
   }
 
   async clear(): Promise<void> {
-    await this.storage.update(MemoryService.STORAGE_KEY, undefined);
+    await this.context.globalState.update(MemoryService.STORAGE_KEY, undefined);
   }
 }
