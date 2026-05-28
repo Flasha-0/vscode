@@ -149,7 +149,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('flasha.chat',
-      new ChatViewProvider(context, modeManager, opencode, autoDetect, memory))
+      new ChatViewProvider(context, modeManager, opencode, autoDetect, memory, providers))
   );
 
   const flashDir = new FlashDirectoryService();
