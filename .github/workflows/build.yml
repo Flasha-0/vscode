@@ -2,13 +2,13 @@ name: Build
 
 on:
   push:
-    branches: [main]
+    branches: [main, flasha-standalone]
     paths:
       - 'extensions/flasha-code/**'
       - 'src/vs/workbench/contrib/flasha/**'
       - '.github/workflows/build.yml'
   pull_request:
-    branches: [main]
+    branches: [main, flasha-standalone]
 
 jobs:
   typecheck:
@@ -20,12 +20,16 @@ jobs:
           node-version: 22.x
           cache: 'npm'
           cache-dependency-path: extensions/flasha-code/package-lock.json
-      - name: Install & TypeCheck Flasha Extension
+      - name: Install dependencies
         working-directory: extensions/flasha-code
-        run: |
-          npm install
-          npx tsc -b tsconfig.json --noEmit
+        run: npm install
+      - name: Type check
+        working-directory: extensions/flasha-code
+        run: npx tsc -b tsconfig.json --noEmit
+      - name: Build with esbuild
+        working-directory: extensions/flasha-code
+        run: node esbuild.mts
       - name: Verify compiled output
-        working-directory: extensions/flasha-code
         run: |
-          if [ -d "dist" ]; then echo "dist/ exists"; else echo "dist/ missing"; exit 1; fi
+          test -f extensions/flasha-code/dist/extension.js && echo "extension.js OK"
+          test -f extensions/flasha-code/dist/webview/webview.js && echo "webview.js OK"

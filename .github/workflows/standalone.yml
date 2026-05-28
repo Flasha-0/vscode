@@ -1,0 +1,65 @@
+name: Build Flasha Code Standalone
+
+on:
+  push:
+    branches: [flasha-standalone]
+    paths:
+      - 'extensions/flasha-code/**'
+      - '.github/workflows/standalone.yml'
+      - 'product.json'
+      - 'package.json'
+  pull_request:
+    branches: [flasha-standalone]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: 22.x
+
+jobs:
+  validate:
+    name: Validate Extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: extensions/flasha-code/package-lock.json
+      - name: Install dependencies
+        working-directory: extensions/flasha-code
+        run: sudo npm install
+      - name: Type check
+        working-directory: extensions/flasha-code
+        run: npx tsc -b tsconfig.json --noEmit
+      - name: Build with esbuild
+        working-directory: extensions/flasha-code
+        run: node esbuild.mts
+      - name: Verify dist
+        run: |
+          test -f extensions/flasha-code/dist/extension.js && echo "extension.js OK"
+          test -f extensions/flasha-code/dist/webview/webview.js && echo "webview.js OK"
+
+  check-branding:
+    name: Check Branding
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify product.json
+        run: |
+          node -e "
+            const p = require('./product.json');
+            if (p.nameShort !== 'Flasha Code') process.exit(1);
+            if (p.nameLong !== 'Flasha Code') process.exit(1);
+            if (p.applicationName !== 'flasha-code') process.exit(1);
+            console.log('product.json branding OK');
+          "
+      - name: Verify extension presence
+        run: |
+          test -d extensions/flasha-code || (echo "Missing flasha-code extension" && exit 1)
+          echo "Extension directory OK"
+          node -e "
+            const p = require('./extensions/flasha-code/package.json');
+            if (p.name !== 'flasha-code') process.exit(1);
+            console.log('Extension package.json OK, modes:', p.contributes?.configuration?.properties?.['flasha.defaultMode']?.enum?.length);
+          "
