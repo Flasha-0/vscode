@@ -1,0 +1,17 @@
+{
+  "folders": [
+    { "name": "Flasha Code Root", "path": "." },
+    { "name": "Flasha Extension", "path": "extensions/flasha-code" },
+    { "name": "Core Integration", "path": "src/vs/workbench/contrib/flasha" }
+  ],
+  "settings": {
+    "typescript.tsdk": "extensions/flasha-code/node_modules/typescript/lib",
+    "files.exclude": {
+      "extensions/flasha-code/dist": true,
+      "extensions/flasha-code/node_modules": true
+    }
+  },
+  "extensions": {
+    "recommendations": ["dbaeumer.vscode-eslint", "amodio.tsl-problem-matcher"]
+  }
+}
