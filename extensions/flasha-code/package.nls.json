@@ -10,5 +10,7 @@
   "flasha.deploy": "Deploy to Vercel",
   "flasha.deploy.preview": "Deploy Preview to Vercel",
   "flasha.preview": "Live Preview",
-  "flasha.supabase.connect": "Connect Supabase"
+  "flasha.supabase.connect": "Connect Supabase",
+  "flasha.terminal": "Open Smart Terminal",
+  "flasha.terminal.run": "AI Suggest Command"
 }
