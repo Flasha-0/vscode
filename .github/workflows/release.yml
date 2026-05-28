@@ -1,0 +1,28 @@
+name: Release Flasha Extension
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - name: Build Flasha Extension
+        working-directory: extensions/flasha-code
+        run: |
+          npm install
+          npx tsc -b tsconfig.json
+      - name: Upload VSIX (requires vsce)
+        working-directory: extensions/flasha-code
+        run: |
+          npm install -g @vscode/vsce 2>/dev/null || true
+          npx vsce package --no-dependencies -o flasha-code.vsix 2>/dev/null || echo "VSIX packaging skipped (no marketplace publisher)"
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: extensions/flasha-code/flasha-code.vsix
+          generate_release_notes: true

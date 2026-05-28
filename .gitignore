@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.vsix
+*.log
+.env
+.env.local
+.flasha/
+.vscode/
+**/node_modules/
+**/dist/
+.secret*
+*.tsbuildinfo

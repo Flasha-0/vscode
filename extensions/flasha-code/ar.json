@@ -1,0 +1,23 @@
+{
+  "flasha.brandName": "فلاشا كود",
+  "flasha.chat.placeholder": "اكتب رسالتك...",
+  "flasha.chat.send": "إرسال",
+  "flasha.mode.auto": "تلقائي",
+  "flasha.mode.plan": "تخطيط",
+  "flasha.mode.build": "بناء",
+  "flasha.mode.chat": "محادثة",
+  "flasha.mode.review": "مراجعة",
+  "flasha.mode.debug": "تصحيح",
+  "flasha.mode.test": "اختبار",
+  "flasha.mode.document": "توثيق",
+  "flasha.mode.refactor": "إعادة هيكلة",
+  "flasha.mode.security": "أمان",
+  "flasha.mode.deploy": "نشر",
+  "flasha.mode.analyze": "تحليل",
+  "flasha.mode.design": "تصميم",
+  "flasha.mode.migrate": "ترحيل",
+  "flasha.mode.git": "Git",
+  "flasha.git.commit": "Commit",
+  "flasha.git.push": "Push",
+  "flasha.deploy.button": "انشر على Vercel"
+}

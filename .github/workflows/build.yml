@@ -1,0 +1,31 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'extensions/flasha-code/**'
+      - 'src/vs/workbench/contrib/flasha/**'
+      - '.github/workflows/build.yml'
+  pull_request:
+    branches: [main]
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'npm'
+          cache-dependency-path: extensions/flasha-code/package-lock.json
+      - name: Install & TypeCheck Flasha Extension
+        working-directory: extensions/flasha-code
+        run: |
+          npm install
+          npx tsc -b tsconfig.json --noEmit
+      - name: Verify compiled output
+        working-directory: extensions/flasha-code
+        run: |
+          if [ -d "dist" ]; then echo "dist/ exists"; else echo "dist/ missing"; exit 1; fi

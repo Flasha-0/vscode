@@ -1,0 +1,23 @@
+{
+  "flasha.brandName": "Flasha Code",
+  "flasha.chat.placeholder": "अपना संदेश लिखें...",
+  "flasha.chat.send": "भेजें",
+  "flasha.mode.auto": "स्वचालित",
+  "flasha.mode.plan": "योजना",
+  "flasha.mode.build": "निर्माण",
+  "flasha.mode.chat": "चैट",
+  "flasha.mode.review": "समीक्षा",
+  "flasha.mode.debug": "डीबग",
+  "flasha.mode.test": "परीक्षण",
+  "flasha.mode.document": "दस्तावेज़",
+  "flasha.mode.refactor": "रीफैक्टर",
+  "flasha.mode.security": "सुरक्षा",
+  "flasha.mode.deploy": "तैनात",
+  "flasha.mode.analyze": "विश्लेषण",
+  "flasha.mode.design": "डिज़ाइन",
+  "flasha.mode.migrate": "माइग्रेट",
+  "flasha.mode.git": "Git",
+  "flasha.git.commit": "कमिट",
+  "flasha.git.push": "पुश",
+  "flasha.deploy.button": "Vercel पर तैनात करें"
+}

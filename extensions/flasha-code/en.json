@@ -1,0 +1,23 @@
+{
+  "flasha.brandName": "Flasha Code",
+  "flasha.chat.placeholder": "Type your message...",
+  "flasha.chat.send": "Send",
+  "flasha.mode.auto": "Auto",
+  "flasha.mode.plan": "Plan",
+  "flasha.mode.build": "Build",
+  "flasha.mode.chat": "Chat",
+  "flasha.mode.review": "Review",
+  "flasha.mode.debug": "Debug",
+  "flasha.mode.test": "Test",
+  "flasha.mode.document": "Document",
+  "flasha.mode.refactor": "Refactor",
+  "flasha.mode.security": "Security",
+  "flasha.mode.deploy": "Deploy",
+  "flasha.mode.analyze": "Analyze",
+  "flasha.mode.design": "Design",
+  "flasha.mode.migrate": "Migrate",
+  "flasha.mode.git": "Git",
+  "flasha.git.commit": "Commit",
+  "flasha.git.push": "Push",
+  "flasha.deploy.button": "Deploy to Vercel"
+}

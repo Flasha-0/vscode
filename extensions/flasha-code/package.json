@@ -1,0 +1,229 @@
+{
+  "name": "flasha-code",
+  "displayName": "Flasha Code",
+  "description": "AI-powered development environment with 15 modes, chat, and smart agents",
+  "version": "1.0.0",
+  "publisher": "Flasha Code",
+  "license": "MIT",
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.98.0"
+  },
+  "categories": [
+    "Chat",
+    "Programming Languages",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "localizedLanguages": [
+    "ar",
+    "en",
+    "es",
+    "fr",
+    "zh",
+    "hi",
+    "pt"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "flasha.chat",
+        "title": "Open Flasha Chat",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.setMode",
+        "title": "Set Mode",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.checkpoint.save",
+        "title": "Save Checkpoint",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.checkpoint.restore",
+        "title": "Restore Checkpoint",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.rules.generate",
+        "title": "Auto-Generate Rules",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.git.clone",
+        "title": "Clone Repository",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.deploy",
+        "title": "Deploy to Vercel",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.deploy.preview",
+        "title": "Deploy Preview to Vercel",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.preview",
+        "title": "Live Preview",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.supabase.connect",
+        "title": "Connect Supabase",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.terminal",
+        "title": "Open Smart Terminal",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.terminal.run",
+        "title": "AI Suggest Command",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.init",
+        "title": "Init Flasha Directory",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.template",
+        "title": "Scaffold from Template",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.api",
+        "title": "API Tester",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.firebase.connect",
+        "title": "Connect Firebase",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.analytics",
+        "title": "Show Analytics",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.env.switch",
+        "title": "Switch Environment",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.providers",
+        "title": "Show LLM Providers",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.agents.list",
+        "title": "Run Background Agent",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.agents.run",
+        "title": "Run Agent...",
+        "category": "Flasha"
+      },
+      {
+        "command": "flasha.agents.review",
+        "title": "Quick Code Review",
+        "category": "Flasha"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "flasha",
+          "title": "Flasha Code",
+          "icon": "icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "flasha": [
+        {
+          "type": "webview",
+          "id": "flasha.chat",
+          "name": "Chat"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Flasha Code",
+      "properties": {
+        "flasha.defaultModel": {
+          "type": "string",
+          "default": "opencode/big-pickle",
+          "description": "Default AI model"
+        },
+        "flasha.defaultMode": {
+          "type": "string",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "plan",
+            "build",
+            "chat",
+            "review",
+            "debug",
+            "test",
+            "document",
+            "refactor",
+            "security",
+            "deploy",
+            "analyze",
+            "design",
+            "migrate",
+            "git"
+          ]
+        },
+        "flasha.language": {
+          "type": "string",
+          "default": "ar",
+          "enum": [
+            "ar",
+            "en"
+          ],
+          "description": "UI language"
+        },
+        "flasha.opencodePort": {
+          "type": "number",
+          "default": 4096,
+          "description": "OpenCode server port"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "node esbuild.mts",
+    "watch": "npx tsc -b tsconfig.json -w",
+    "package": "npx vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "@types/vscode": "^1.98.0",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.7.0"
+  },
+  "__metadata": {
+    "id": "flasha-code",
+    "publisherDisplayName": "Flasha Code",
+    "publisherId": "flasha-code"
+  },
+  "dependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}
