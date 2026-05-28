@@ -19,7 +19,9 @@
       { "command": "flasha.rules.generate", "title": "Auto-Generate Rules", "category": "Flasha" },
       { "command": "flasha.git.clone", "title": "Clone Repository", "category": "Flasha" },
       { "command": "flasha.deploy", "title": "Deploy to Vercel", "category": "Flasha" },
-      { "command": "flasha.deploy.preview", "title": "Deploy Preview to Vercel", "category": "Flasha" }
+      { "command": "flasha.deploy.preview", "title": "Deploy Preview to Vercel", "category": "Flasha" },
+      { "command": "flasha.preview", "title": "Live Preview", "category": "Flasha" },
+      { "command": "flasha.supabase.connect", "title": "Connect Supabase", "category": "Flasha" }
     ],
     "viewsContainers": {
       "activitybar": [
