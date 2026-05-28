@@ -1,5 +1,5 @@
 {
-    "nameShort":  "Flasha Code",
+    "nameShort":  "فلاشة كود",
     "onboardingThemes":  [
 
                          ],
@@ -19,7 +19,7 @@
     "onboardingKeymaps":  [
 
                           ],
-    "nameLong":  "Flasha Code",
+    "nameLong":  "فلاشة كود",
     "builtInExtensions":  [
                               {
                                   "sha256":  "7380a890787452f14b2db7835dfa94de538caf358ebc263f9d46dd68ac52de93",
@@ -71,7 +71,7 @@
                               }
                           ],
     "serverApplicationName":  "flasha-code-server",
-    "win32ShellNameShort":  "F\u0026lasha Code",
+    "win32ShellNameShort":  "فلاشة كود",
     "win32arm64UserAppId":  "{{3AEBF0C8-F733-4AD4-BADE-FDB816D53D7B}",
     "applicationName":  "flasha-code",
     "licenseFileName":  "LICENSE.txt",
@@ -80,14 +80,14 @@
     "linuxIconName":  "flasha-code",
     "serverDataFolderName":  ".flasha-code-server",
     "serverLicenseUrl":  "https://github.com/Flasha-0/vscode/blob/main/LICENSE.txt",
-    "win32DirName":  "Flasha Code",
+    "win32DirName":  "فلاشة كود",
     "win32TunnelMutex":  "flashacode-tunnel",
     "darwinProfileUUID":  "47827DD9-4734-49A0-AF80-7E19B11495CC",
     "reportIssueUrl":  "https://github.com/Flasha-0/vscode/issues/new",
     "win32TunnelServiceMutex":  "flashacode-tunnelservice",
     "serverLicensePrompt":  "",
     "nodejsRepository":  "https://nodejs.org",
-    "win32NameVersion":  "Flasha Code",
+    "win32NameVersion":  "فلاشة كود",
     "licenseUrl":  "https://github.com/Flasha-0/vscode/blob/main/LICENSE.txt",
     "win32arm64AppId":  "{{E1ACE434-89C5-48D1-88D3-E2991DF85475}",
     "darwinBundleIdentifier":  "com.flasha.code",

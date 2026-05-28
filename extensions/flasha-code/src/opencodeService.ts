@@ -37,17 +37,17 @@ export class OpenCodeService {
         this.process = null;
         this.ws = null;
       });
-      console.log(`[Flasha] OpenCode started on port ${this.port}`);
+      console.log(`[فلاشة كود] OpenCode started on port ${this.port}`);
       setTimeout(() => this.connectWs(), 1500);
     } catch (e) {
-      console.warn('[Flasha] OpenCode CLI not found — install with: npm i -g @opencode/cli');
+      console.warn('[فلاشة كود] OpenCode CLI مش موجود — install with: npm i -g @opencode/cli');
     }
   }
 
   private async connectWs(): Promise<void> {
     try {
       const ws = new WebSocket(`ws://localhost:${this.port}`);
-      ws.onopen = () => console.log('[Flasha] Connected to OpenCode');
+      ws.onopen = () => console.log('[فلاشة كود] متصل بـ OpenCode');
       ws.onmessage = (event: MessageEvent) => {
         try {
           const msg = JSON.parse(event.data.toString());
@@ -58,7 +58,7 @@ export class OpenCodeService {
       ws.onclose = () => { this.ws = null; };
       ws.onerror = () => { this.ws = null; };
       this.ws = ws;
-    } catch { console.warn('[Flasha] WebSocket connection failed'); }
+    } catch { console.warn('[فلاشة كود] فشل اتصال WebSocket'); }
   }
 
   async query(model: string, mode: string, prompt: string): Promise<string> {

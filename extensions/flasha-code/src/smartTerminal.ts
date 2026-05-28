@@ -5,7 +5,7 @@ export class SmartTerminal {
 
   async show(): Promise<void> {
     if (this.terminal) { this.terminal.show(); return; }
-    this.terminal = vscode.window.createTerminal('Flasha Terminal');
+    this.terminal = vscode.window.createTerminal('فلاشة كود');
     this.terminal.show();
   }
 

@@ -8,7 +8,7 @@ export class LivePreviewService {
     if (this.panel) { this.panel.reveal(); return; }
 
     this.panel = vscode.window.createWebviewPanel(
-      'flasha.livePreview', 'Flasha Preview',
+      'flasha.livePreview', 'فلاشة كود معاينة',
       vscode.ViewColumn.Beside, { enableScripts: true }
     );
 

@@ -75,7 +75,7 @@ export class HooksService {
   private async executeHook(event: HookEvent, context: string) {
     const hooks = await this.getHooks();
     for (const hook of hooks.filter(h => h.event === event && h.enabled)) {
-      console.log(`[Flasha Hook] ${event} → ${hook.action} (${context})`);
+      console.log(`[فلاشة كود] ${event} → ${hook.action} (${context})`);
     }
   }
 

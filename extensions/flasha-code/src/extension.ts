@@ -72,7 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
       );
       if (selected) {
         modeManager.setMode(selected.label);
-        vscode.window.showInformationMessage(`Flasha: ${modeManager.getLabel(selected.label)}`);
+        vscode.window.showInformationMessage(`فلاشة كود: ${modeManager.getLabel(selected.label)}`);
       }
     })
   );
@@ -163,7 +163,7 @@ export function activate(context: vscode.ExtensionContext) {
       const root = flashDir.getWorkspaceRoot();
       if (root) {
         await flashDir.ensureDirectory(root);
-        vscode.window.showInformationMessage('Flasha directory initialized');
+        vscode.window.showInformationMessage('تم تهيئة مجلد فلاشة كود');
       }
     })
   );

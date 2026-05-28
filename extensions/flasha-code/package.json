@@ -1,11 +1,11 @@
 {
   "name": "flasha-code",
-  "displayName": "Flasha Code",
-  "description": "AI-powered VS Code extension: 15 modes, chat, background agents, MCP servers, memory & rules system, GitHub/Supabase/Vercel/Firebase integrations, API tester, live preview, 7 languages, template gallery",
+  "displayName": "فلاشة كود",
+  "description": "بيئة تطوير ذكية: 15 وضع، شات، وكلاء خلفيون، خوادم MCP، نظام ذاكرة وقواعد، تكامل GitHub/Supabase/Vercel/Firebase، معاينة مباشرة، 7 لغات",
   "version": "1.0.0",
-  "publisher": "Flasha Code",
+  "publisher": "فلاشة كود",
   "license": "MIT",
-  "icon": "icon.svg",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -31,120 +31,120 @@
     "commands": [
       {
         "command": "flasha.chat",
-        "title": "Open Flasha Chat",
-        "category": "Flasha"
+        "title": "فتح شات فلاشة كود",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.setMode",
-        "title": "Set Mode",
-        "category": "Flasha"
+        "title": "تغيير الوضع",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.checkpoint.save",
-        "title": "Save Checkpoint",
-        "category": "Flasha"
+        "title": "حفظ نقطة تفتيش",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.checkpoint.restore",
-        "title": "Restore Checkpoint",
-        "category": "Flasha"
+        "title": "استعادة نقطة تفتيش",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.rules.generate",
-        "title": "Auto-Generate Rules",
-        "category": "Flasha"
+        "title": "توليد القواعد تلقائياً",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.git.clone",
-        "title": "Clone Repository",
-        "category": "Flasha"
+        "title": "استنساخ مستودع",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.deploy",
-        "title": "Deploy to Vercel",
-        "category": "Flasha"
+        "title": "نشر على Vercel",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.deploy.preview",
-        "title": "Deploy Preview to Vercel",
-        "category": "Flasha"
+        "title": "نشر نسخة تجريبية على Vercel",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.preview",
-        "title": "Live Preview",
-        "category": "Flasha"
+        "title": "معاينة مباشرة",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.supabase.connect",
-        "title": "Connect Supabase",
-        "category": "Flasha"
+        "title": "الاتصال بـ Supabase",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.terminal",
-        "title": "Open Smart Terminal",
-        "category": "Flasha"
+        "title": "فتح الطرفية الذكية",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.terminal.run",
-        "title": "AI Suggest Command",
-        "category": "Flasha"
+        "title": "اقتراح أمر AI",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.init",
-        "title": "Init Flasha Directory",
-        "category": "Flasha"
+        "title": "تهيئة مجلد فلاشة كود",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.template",
-        "title": "Scaffold from Template",
-        "category": "Flasha"
+        "title": "قالب من مشروع جاهز",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.api",
-        "title": "API Tester",
-        "category": "Flasha"
+        "title": "اختبار API",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.firebase.connect",
-        "title": "Connect Firebase",
-        "category": "Flasha"
+        "title": "الاتصال بـ Firebase",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.analytics",
-        "title": "Show Analytics",
-        "category": "Flasha"
+        "title": "عرض التحليلات",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.env.switch",
-        "title": "Switch Environment",
-        "category": "Flasha"
+        "title": "تبديل البيئة",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.providers",
-        "title": "Show LLM Providers",
-        "category": "Flasha"
+        "title": "عرض مزودي النماذج",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.agents.list",
-        "title": "Run Background Agent",
-        "category": "Flasha"
+        "title": "تشغيل وكيل خلفي",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.agents.run",
-        "title": "Run Agent...",
-        "category": "Flasha"
+        "title": "تشغيل وكيل...",
+        "category": "فلاشة كود"
       },
       {
         "command": "flasha.agents.review",
-        "title": "Quick Code Review",
-        "category": "Flasha"
+        "title": "مراجعة سريعة للكود",
+        "category": "فلاشة كود"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
           "id": "flasha",
-          "title": "Flasha Code",
+          "title": "فلاشة كود",
           "icon": "icon.svg"
         }
       ]
@@ -154,12 +154,12 @@
         {
           "type": "webview",
           "id": "flasha.chat",
-          "name": "Chat"
+          "name": "شات"
         }
       ]
     },
     "configuration": {
-      "title": "Flasha Code",
+      "title": "فلاشة كود",
       "properties": {
         "flasha.defaultModel": {
           "type": "string",
@@ -219,7 +219,7 @@
   },
   "__metadata": {
     "id": "flasha-code",
-    "publisherDisplayName": "Flasha Code",
+    "publisherDisplayName": "فلاشة كود",
     "publisherId": "flasha-code"
   },
   "dependencies": {

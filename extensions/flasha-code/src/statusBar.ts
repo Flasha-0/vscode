@@ -29,7 +29,7 @@ export class FlashaStatusBar {
     const mode = this.modeManager.currentMode;
     const label = this.modeManager.getLabel(mode);
     this.item.text = `$(flame) ${mode.toUpperCase()}`;
-    this.item.tooltip = `Flasha Code: ${label}`;
+    this.item.tooltip = `فلاشة كود: ${label}`;
     this.item.color = mode === 'auto' ? '#F59E0B' : '#58A6FF';
   }
 

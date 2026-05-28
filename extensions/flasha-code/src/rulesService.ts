@@ -24,7 +24,7 @@ export class RulesService {
   async autoGenerateRules(projectRoot: vscode.Uri): Promise<void> {
     const techs = await this.detectTechStack(projectRoot);
     const lines = [
-      '# Flasha Code - Project Rules (Auto-generated)',
+      '# فلاشة كود - قواعد المشروع (منشأة تلقائياً)',
       `# Detected: ${techs.join(', ')}`,
       '',
       '- Use consistent code style with existing patterns',

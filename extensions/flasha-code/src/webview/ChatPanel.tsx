@@ -31,7 +31,7 @@ export default function ChatPanel({ messages, onSend }: Props) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0', display: 'flex', flexDirection: 'column' }}>
         {messages.length === 0 && (
           <div style={{ textAlign: 'center', color: '#666', marginTop: '40px' }}>
             <p style={{ fontSize: '24px', margin: 0 }}>🦎</p>
