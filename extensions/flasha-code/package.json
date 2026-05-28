@@ -12,9 +12,14 @@
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-      { "command": "flasha.chat", "title": "Flasha Code: Chat", "category": "Flasha" },
-      { "command": "flasha.setMode", "title": "Flasha Code: Set Mode", "category": "Flasha" },
-      { "command": "flasha.open", "title": "Flasha Code: Open", "category": "Flasha" }
+      { "command": "flasha.chat", "title": "Open Flasha Chat", "category": "Flasha" },
+      { "command": "flasha.setMode", "title": "Set Mode", "category": "Flasha" },
+      { "command": "flasha.checkpoint.save", "title": "Save Checkpoint", "category": "Flasha" },
+      { "command": "flasha.checkpoint.restore", "title": "Restore Checkpoint", "category": "Flasha" },
+      { "command": "flasha.rules.generate", "title": "Auto-Generate Rules", "category": "Flasha" },
+      { "command": "flasha.git.clone", "title": "Clone Repository", "category": "Flasha" },
+      { "command": "flasha.deploy", "title": "Deploy to Vercel", "category": "Flasha" },
+      { "command": "flasha.deploy.preview", "title": "Deploy Preview to Vercel", "category": "Flasha" }
     ],
     "viewsContainers": {
       "activitybar": [
