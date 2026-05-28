@@ -1,0 +1,14 @@
+{
+  "displayName": "Flasha Code",
+  "description": "AI-powered development environment with 15 modes, chat, and smart agents",
+  "flasha.chat": "Open Flasha Chat",
+  "flasha.setMode": "Set Mode",
+  "flasha.checkpoint.save": "Save Checkpoint",
+  "flasha.checkpoint.restore": "Restore Checkpoint",
+  "flasha.rules.generate": "Auto-Generate Rules",
+  "flasha.git.clone": "Clone Repository",
+  "flasha.deploy": "Deploy to Vercel",
+  "flasha.deploy.preview": "Deploy Preview to Vercel",
+  "flasha.preview": "Live Preview",
+  "flasha.supabase.connect": "Connect Supabase"
+}
