@@ -9,6 +9,8 @@ import { CheckpointsService } from './checkpointsService';
 import { FlashaStatusBar } from './statusBar';
 import { GitHubService } from './githubService';
 import { VercelService } from './vercelService';
+import { LivePreviewService } from './livePreviewService';
+import { SupabaseService } from './supabaseService';
 
 export function activate(context: vscode.ExtensionContext) {
   const modeManager = new FlashaModeManager();
@@ -19,6 +21,8 @@ export function activate(context: vscode.ExtensionContext) {
   const checkpoints = new CheckpointsService(context);
   const git = new GitHubService();
   const vercel = new VercelService();
+  const preview = new LivePreviewService();
+  const supabase = new SupabaseService();
 
   new FlashaStatusBar(modeManager);
 
@@ -88,6 +92,14 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('flasha.deploy.preview', () => vercel.deployPreview())
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.preview', () => preview.show())
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('flasha.supabase.connect', () => supabase.connect())
   );
 
   context.subscriptions.push(
