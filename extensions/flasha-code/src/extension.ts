@@ -17,6 +17,7 @@ import { SmartTerminal } from './smartTerminal';
 export function activate(context: vscode.ExtensionContext) {
   const modeManager = new FlashaModeManager();
   const opencode = OpenCodeService.getInstance(context);
+  _opencode = opencode;
   const autoDetect = new AutoModeDetector(modeManager);
   const memory = new MemoryService(context);
   const rules = new RulesService(context);
@@ -130,6 +131,8 @@ export function activate(context: vscode.ExtensionContext) {
   rules.detectProjectRules();
 }
 
+let _opencode: OpenCodeService | undefined;
+
 export function deactivate() {
-  OpenCodeService.getInstance({} as any).stop();
+  _opencode?.stop();
 }
