@@ -9,7 +9,8 @@
   "engines": { "vscode": "^1.98.0" },
   "categories": ["Chat", "Programming Languages", "Other"],
   "activationEvents": ["onStartupFinished"],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
+  "localizedLanguages": ["ar","en","es","fr","zh","hi","pt"],
   "contributes": {
     "commands": [
       { "command": "flasha.chat", "title": "Open Flasha Chat", "category": "Flasha" },
@@ -21,7 +22,9 @@
       { "command": "flasha.deploy", "title": "Deploy to Vercel", "category": "Flasha" },
       { "command": "flasha.deploy.preview", "title": "Deploy Preview to Vercel", "category": "Flasha" },
       { "command": "flasha.preview", "title": "Live Preview", "category": "Flasha" },
-      { "command": "flasha.supabase.connect", "title": "Connect Supabase", "category": "Flasha" }
+      { "command": "flasha.supabase.connect", "title": "Connect Supabase", "category": "Flasha" },
+      { "command": "flasha.terminal", "title": "Open Smart Terminal", "category": "Flasha" },
+      { "command": "flasha.terminal.run", "title": "AI Suggest Command", "category": "Flasha" }
     ],
     "viewsContainers": {
       "activitybar": [
@@ -44,11 +47,17 @@
     }
   },
   "scripts": {
-    "compile": "tsc -b tsconfig.json",
-    "watch": "tsc -b tsconfig.json -w"
+    "compile": "npx tsc -b tsconfig.json",
+    "watch": "npx tsc -b tsconfig.json -w",
+    "package": "npx vsce package --no-dependencies"
   },
   "devDependencies": {
     "@types/vscode": "^1.98.0",
     "typescript": "^5.7.0"
+  },
+  "__metadata": {
+    "id": "flasha-code",
+    "publisherDisplayName": "Flasha Code",
+    "publisherId": "flasha-code"
   }
 }
